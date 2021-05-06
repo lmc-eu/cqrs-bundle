@@ -1,0 +1,714 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% set colors = { 'success': '#4F805D', 'warning': '#A46A1F', 'error': '#B0413E' } %}
+{% import _self as format %}
+
+{% block toolbar %}
+    {% if collector.items|length %}
+        {% set queryColor = (collector.countUncachedQueries == 0) ? 'green' : 'yellow' %}
+
+        {% set icon %}
+            <img height="26" style="padding-top: 3px" alt="CQRS"
+                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACOklEQVRIS62V3VEVURCEuyNQIlDKAJAIxAjkRqBGoEaAvlpWeTMAIgAeeAYjUCIQIhAiGOs7ztw6wO7exWKqtu7P7pme6e6ZtbqIiB1Jr/IvvldcSuL6JenCNt9nhSPiqaQPkhaSzjNJJeDzeWbiuZeSdiX9kfTJNoCTAcABSW0v1z1c9yMC0GNJO7avp84BQNUHtgGaFQlwJum9bc6PBgCRd2mXqjhw07efNG4lXWjzLs8AMFlYdQA9HzuBp4q6omNJaHJt+/O6Ds5tN8dkpQjJRYI+6IyETdiIaInnAOCU3TmO6EQG/GiOk6AIgCeSoOlwyuPZ4RtJVI+ToOrY9skYTQDQMu0zC0QNVe+Ooqwfvj4nZwYd1URGg7QeQ8RFQrp6aCxs48RVtA5sk3A0chjf5gPQ8U3Si+x2I6miIIZusx++ouh3CnZvx2Rn3Cd+ZLe1Nmp1fJV0ms986Z1VInOACmrQ0OUKwSOC+fieh7fvui2FxyBUj46tiKKjBg3ecQafz0YdYXvoXoJQyF7OCrS1uKdBUoIF64IGrElsjC23HDwABjtY3lW/KogIAH7mb1b04NbNeaJ7Zql2VesA/uEeIQeHJjcuLyJ4xoqrGcnzaFRJb+m04jTfZjyEQLxQ+j1fdFVjFIQRKA7d6qWE5bdvzcEa/wN2mW6CKhKPmeBQErPC+oDKVuCgK8ZAk46a9tq2dIKGWBoG9rO714A8CGCq284UPcji0QEAigic9m/o5lT1P8/kXCz/Ahs6Cg8toHjQAAAAAElFTkSuQmCC" />
+            <span class="sf-toolbar-status sf-toolbar-status-{{ queryColor }}">{{ collector.items|length }}</span>
+        {% endset %}
+
+        {% set text %}
+            <div class="sf-toolbar-info-group">
+                <div class="sf-toolbar-info-piece">
+                    <b>Commands</b>
+                    <span class="sf-toolbar-status">{{ collector.commands|length }}</span>
+                </div>
+
+                <div class="sf-toolbar-info-piece">
+                    <b>Queries</b>
+                    <span class="sf-toolbar-status">{{ collector.queries|length }}</span>
+                </div>
+            </div>
+
+            <div class="sf-toolbar-info-group">
+                <div class="sf-toolbar-info-piece">
+                    <b>Queries (Cached)</b>
+                    <span class="sf-toolbar-status sf-toolbar-status-green">{{ collector.countCachedQueries }}</span>
+                </div>
+                <div class="sf-toolbar-info-piece">
+                    <b>Queries (Uncached)</b>
+                    <span class="sf-toolbar-status sf-toolbar-status-{{ queryColor }}">{{ collector.countUncachedQueries }}</span>
+                </div>
+            </div>
+
+            {% if collector.others|length > 0 %}
+                <div class="sf-toolbar-info-piece">
+                    <b>Others</b>
+                    <span class="sf-toolbar-status">{{ collector.others|length }}</span>
+                </div>
+            {% endif %}
+        {% endset %}
+
+        {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
+    {% endif %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label{% if collector.items|length <= 0 %} disabled{% endif %}">
+        <span class="icon">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACOklEQVRIS62V3VEVURCEuyNQIlDKAJAIxAjkRqBGoEaAvlpWeTMAIgAeeAYjUCIQIhAiGOs7ztw6wO7exWKqtu7P7pme6e6ZtbqIiB1Jr/IvvldcSuL6JenCNt9nhSPiqaQPkhaSzjNJJeDzeWbiuZeSdiX9kfTJNoCTAcABSW0v1z1c9yMC0GNJO7avp84BQNUHtgGaFQlwJum9bc6PBgCRd2mXqjhw07efNG4lXWjzLs8AMFlYdQA9HzuBp4q6omNJaHJt+/O6Ds5tN8dkpQjJRYI+6IyETdiIaInnAOCU3TmO6EQG/GiOk6AIgCeSoOlwyuPZ4RtJVI+ToOrY9skYTQDQMu0zC0QNVe+Ooqwfvj4nZwYd1URGg7QeQ8RFQrp6aCxs48RVtA5sk3A0chjf5gPQ8U3Si+x2I6miIIZusx++ouh3CnZvx2Rn3Cd+ZLe1Nmp1fJV0ms986Z1VInOACmrQ0OUKwSOC+fieh7fvui2FxyBUj46tiKKjBg3ecQafz0YdYXvoXoJQyF7OCrS1uKdBUoIF64IGrElsjC23HDwABjtY3lW/KogIAH7mb1b04NbNeaJ7Zql2VesA/uEeIQeHJjcuLyJ4xoqrGcnzaFRJb+m04jTfZjyEQLxQ+j1fdFVjFIQRKA7d6qWE5bdvzcEa/wN2mW6CKhKPmeBQErPC+oDKVuCgK8ZAk46a9tq2dIKGWBoG9rO714A8CGCq284UPcji0QEAigic9m/o5lT1P8/kXCz/Ahs6Cg8toHjQAAAAAElFTkSuQmCC"
+                 alt="CQRS"
+                 height="26" />
+        </span>
+        <strong>CQRS</strong>
+        <span class="count">
+            <span>{{ collector.items|length }}</span>
+        </span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Commands &amp; Queries <span>({{ collector.items|length }})</span></h2>
+
+    <style>
+        .metric.metric--success {
+            background-color: {{ colors.success|raw }};
+        }
+        .metric.metric--warning {
+            background-color: {{ colors.warning|raw }};
+        }
+
+        .sf-button.red {
+            background-color: {{ colors.error|raw }};
+            color: #FFF;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        tbody th {
+            background-color: var(--table-header);
+        }
+
+        .col--small {
+            width: 160px;
+        }
+        .col--success {
+            background-color: {{ colors.success|raw }};
+        }
+        .col--warning {
+            background-color: {{ colors.warning|raw }};
+        }
+    </style>
+
+    <div class="metrics">
+        <div class="metric">
+            <span class="value">{{ collector.commands|length }}</span>
+            <span class="label">Commands</span>
+        </div>
+
+        <div class="metric">
+            <span class="value">{{ collector.queries|length }}</span>
+            <span class="label">Queries</span>
+        </div>
+
+        <div class="metric-divider"></div>
+
+        <div class="metric{% if collector.countCachedQueries > 0 %} metric--success{% endif %}">
+            <span class="value">{{ collector.countCachedQueries }}</span>
+            <span class="label">Queries (cached)</span>
+        </div>
+
+        <div class="metric{% if collector.countUncachedQueries > 0 %} metric--warning{% endif %}">
+            <span class="value">{{ collector.countUncachedQueries }}</span>
+            <span class="label">Queries (uncached)</span>
+        </div>
+
+        {% if collector.others|length > 0 %}
+            <div class="metric-divider"></div>
+
+            <div class="metric">
+                <span class="value">{{ collector.others|length }}</span>
+                <span class="label">Other</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <table id="cqrs--message" class="routing" style="display: none;">
+        <tr class="matches">
+            <td></td>
+        </tr>
+    </table>
+
+    <h3>Commands <span>({{ collector.commands|length }})</span></h3>
+    {% for commandItem in collector.commands %}
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">Class</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">{{ commandItem.type }}</td>
+                    <td>{{ commandItem.duration }}ms</td>
+                </tr>
+                <tr>
+                    <th class="col--small">Command</th>
+                    {{ format.colWrap(commandItem.profilerId, 3) }}
+                </tr>
+                <tr>
+                    <th class="col--small">Handled by</th>
+                    {{ format.colWrap(commandItem.handledBy ?? '', 3) }}
+                </tr>
+                {% if commandItem.decodedBy is not empty %}
+                    <tr>
+                        <th class="col--small">Decoded by</th>
+                        <td colspan="3">
+                            <ol>
+                                {% for decodedBy in commandItem.decodedBy %}
+                                    <li>{{ decodedBy }}</li>
+                                {% endfor %}
+                            </ol>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if commandItem.error is not null %}
+                    <tr>
+                        <th>Error</th>
+                        {{ format.colWrapDump(commandItem.error, 3) }}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th>Response</th>
+                        {{ format.colWrapDump(commandItem.response, 3) }}
+                    </tr>
+                {% endif %}
+                {% if commandItem.additionalData %}
+                    {% for key, value in commandItem.additionalData %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            {{ format.colWrapDump(value, 3) }}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty">
+            <p>There are no commands on this page.</p>
+        </div>
+    {% endfor %}
+
+    <h3>Queries <span>({{ collector.queries|length }})</span></h3>
+    {% set keys = [] %}
+    {% for queryItem in collector.queries %}
+        {% if queryItem.cacheKey is not null %}
+            {% set currentCacheKey = queryItem.cacheKey.hashedKey %}
+            {% set keys = keys | merge([currentCacheKey | url_encode]) %}
+        {% else %}
+            {% set currentCacheKey = null %}
+        {% endif %}
+
+        <table id="{{ currentCacheKey }}">
+            <thead>
+                <tr>
+                    <th colspan="2">Class</th>
+                    <th>Duration</th>
+                    <th>Cache (hit)</th>
+                    <th>Cache (stored)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">{{ queryItem.type }}</td>
+                    <td>{{ queryItem.duration }}ms</td>
+                    {% if queryItem.isLoadedFromCache %}
+                        <td class="col--success" data-cached-status="{{ currentCacheKey }}">Yes</td>
+                    {% elseif queryItem.isLoadedFromCache is not null %}
+                        <td class="col--warning" data-cached-status="{{ currentCacheKey }}">No</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if queryItem.isStoredInCache %}
+                        <td class="col--success" data-cached-status="{{ currentCacheKey }}">Yes (for {{ queryItem.storedInCacheFor }}s)</td>
+                    {% elseif queryItem.isStoredInCache is not null %}
+                        <td class="col--warning" data-cached-status="{{ currentCacheKey }}">No</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>
+                        {% if currentCacheKey is not null %}
+                            <button class="sf-button red"
+                                    data-cache-invalidate
+                                    data-url="{{ url('_cqrs_query_cache_invalidate', {'key': currentCacheKey | url_encode}) }}">
+                                Invalidate
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col--small">Query</th>
+                    {{ format.colWrap(queryItem.profilerId, 5) }}
+                </tr>
+                <tr>
+                    <th class="col--small">Handled by</th>
+                    {{ format.colWrap(queryItem.handledBy ?? '', 5) }}
+                </tr>
+                {% if queryItem.decodedBy is not empty %}
+                    <tr>
+                        <th class="col--small">Decoded by</th>
+                        <td colspan="5">
+                            <ol>
+                                {% for decodedBy in queryItem.decodedBy %}
+                                    <li>{{ decodedBy }}</li>
+                                {% endfor %}
+                            </ol>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if currentCacheKey %}
+                    <tr>
+                        <th>Cache key (original)</th>
+                        {{ format.colWrap(queryItem.cacheKey.key, 5) }}
+                    </tr>
+                    <tr>
+                        <th>Cache key ({{ queryItem.cacheKey.algorithm }})</th>
+                        {{ format.colWrap(currentCacheKey, 5) }}
+                    </tr>
+                {% endif %}
+                {% if queryItem.error is not null %}
+                    <tr>
+                        <th>Error</th>
+                        {{ format.colWrapDump(queryItem.error, 5) }}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th>Response</th>
+                        {{ format.colWrapDump(queryItem.response, 5) }}
+                    </tr>
+                {% endif %}
+                {% if queryItem.additionalData %}
+                    {% for key, value in queryItem.additionalData %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            {{ format.colWrapDump(value, 5) }}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+
+        {% if loop.last and keys is not empty %}
+            <button class="sf-button red"
+                    data-cache-invalidate-all
+                    data-url="{{ url('_cqrs_query_cache_invalidate', {'key': keys}) }}">
+                Invalidate cache for all queries
+            </button>
+        {% endif %}
+    {% else %}
+        <div class="empty">
+            <p>There are no queries on this page.</p>
+        </div>
+    {% endfor %}
+
+    <script>
+        var invalidateButtons = document.querySelectorAll('[data-cache-invalidate]');
+        var invalidateAllButton = document.querySelector('[data-cache-invalidate-all]');
+        var messageContainer = document.getElementById('cqrs--message');
+        var message = messageContainer.querySelector('td');
+        var defaultMessage = 'Cache entries with keys "%s" were successfully invalidated.';
+
+        for (var i = 0; i < invalidateButtons.length; i++) {
+            var button = invalidateButtons[i];
+
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                ajax(this.dataset.url, handleResponse);
+            });
+        }
+
+        invalidateAllButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            ajax(this.dataset.url, handleResponse);
+        });
+
+        function handleResponse(response) {
+            var statuses = []
+
+            for (var i = 0; i < response.length; i++) {
+                var item = response[i];
+                var cacheKey = item.key;
+                var isInvalidated = item.isInvalidated;
+
+                statuses.push(
+                    isInvalidated
+                        ? 'Key ' + cacheKey + ' is successfully invalidated.'
+                        : 'Key ' + cacheKey + ' is not invalidated.'
+                );
+
+                var cachedStatuses = document.querySelectorAll('[data-cached-status="' + cacheKey + '"]');
+
+                for (var j = 0; j < cachedStatuses.length; j++) {
+                    if (isInvalidated) {
+                        cachedStatuses[j].innerHTML = 'Invalidated'
+                    }
+                }
+            }
+
+            setMessage(statuses.join('<br>'))
+        }
+
+        function ajax(url, handleResponse) {
+            if (!url) {
+                console.error('You have to provide URL of AJAX request!');
+                return;
+            }
+
+            var httpRequest = new XMLHttpRequest();
+
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === 4 && httpRequest.status === 200) {
+                    var response = JSON.parse(httpRequest.responseText);
+
+                    handleResponse(response);
+                }
+            };
+
+            httpRequest.open('GET', url);
+            httpRequest.send(null);
+        }
+
+        function setMessage(msg) {
+            message.innerHTML = msg;
+            messageContainer.style.display = 'table';
+
+            setTimeout(function () {
+                messageContainer.style.display = 'none';
+            }, 10 * 1000);
+        }
+    </script>
+
+    {% if collector.others|length > 0 %}
+        <h3>Others <span>({{ collector.others|length }})</span></h3>
+        {% for otherItem in collector.others %}
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Class</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">{{ otherItem.type }}</td>
+                        <td>{{ otherItem.duration }}ms</td>
+                    </tr>
+                    <tr>
+                        <th>Other</th>
+                        {{ format.colWrap(otherItem.profilerId, 2) }}
+                    </tr>
+                    <tr>
+                        <th class="col--small">Handled by</th>
+                        {{ format.colWrap(otherItem.handledBy ?? '', 2) }}
+                    </tr>
+                    {% if otherItem.decodedBy is not empty %}
+                        <tr>
+                            <th class="col--small">Decoded by</th>
+                            <td colspan="2">
+                                <ol>
+                                    {% for decodedBy in otherItem.decodedBy %}
+                                        <li>{{ decodedBy }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if otherItem.error is not null %}
+                        <tr>
+                            <th>Error</th>
+                            {{ format.colWrapDump(otherItem.error, 2) }}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th>Response</th>
+                            {{ format.colWrapDump(otherItem.response, 2) }}
+                        </tr>
+                    {% endif %}
+                    {% if otherItem.additionalData %}
+                        {% for key, value in otherItem.additionalData %}
+                            <tr>
+                                <th>{{ key }}</th>
+                                {{ format.colWrapDump(value, 2) }}
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endif %}
+
+    <br>
+    <hr>
+
+    <h2>Handlers</h2>
+
+    <div class="metrics">
+        {% if collector.queryFetcher.handlers is defined %}
+            <div class="metric">
+                <span class="value">{{ collector.queryFetcher.handlers|length }}</span>
+                <span class="label">Query Fetcher Handlers</span>
+            </div>
+
+            <div class="metric">
+                <span class="value">{{ collector.queryFetcher.decoders|length }}</span>
+                <span class="label">Response Decoders</span>
+            </div>
+
+            <div class="metric-divider"></div>
+        {% endif %}
+
+        {% if collector.commandSender.handlers is defined %}
+            <div class="metric">
+                <span class="value">{{ collector.commandSender.handlers|length }}</span>
+                <span class="label">Command Sender Handlers</span>
+            </div>
+
+            <div class="metric">
+                <span class="value">{{ collector.commandSender.decoders|length }}</span>
+                <span class="label">Response Decoders</span>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if collector.queryFetcher is not empty %}
+        <table>
+            <thead>
+                <tr>
+                    <th>QueryFetcherInterface</th>
+                    <th>Class</th>
+                    <th class="col--small">Cache enabled</th>
+                    <th class="col--small">Cache provider</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>{{ collector.queryFetcher.class }}</td>
+                    <td>{% if collector.queryFetcher.isCacheEnabled %}Yes{% else %}No{% endif %}</td>
+                    <td>{{ collector.queryFetcher.cacheProvider ?? '' }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Handler</th>
+                                    <th class="col--small">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for handler in collector.queryFetcher.handlers %}
+                                    <tr>
+                                        <td>{{ handler.handler }}</td>
+                                        <td>{{ handler.priority }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="empty">
+                                                <p>No query handlers</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Response Decoder</th>
+                                    <th class="col--small">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for decoder in collector.queryFetcher.decoders %}
+                                    <tr>
+                                        <td>{{ decoder.decoder }}</td>
+                                        <td>{{ decoder.priority }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="empty">
+                                                <p>No response decoders</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if collector.commandSender is not empty %}
+        <table>
+            <thead>
+                <tr>
+                    <th>CommandSenderInterface</th>
+                    <th>Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>{{ collector.commandSender.class }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Handler</th>
+                                    <th class="col--small">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for handler in collector.commandSender.handlers %}
+                                    <tr>
+                                        <td>{{ handler.handler }}</td>
+                                        <td>{{ handler.priority }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="empty">
+                                                <p>No send command handlers</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Decoder</th>
+                                    <th class="col--small">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for decoder in collector.commandSender.decoders %}
+                                    <tr>
+                                        <td>{{ decoder.decoder }}</td>
+                                        <td>{{ decoder.priority }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="empty">
+                                                <p>No response decoders</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br>
+    <hr>
+
+    <h2>Profiler Formatters</h2>
+
+    {% if collector.formatters|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ProfilerFormatterInterface</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for formatter in collector.formatters %}
+                    <tr>
+                        <td>{{ formatter }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty">
+            <p>No profiler formatters</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% macro colWrap(value, colspan = null) %}
+    {% if value is defined and value.formatted is defined and value.isWide %}
+            <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Original">
+                <div style="word-wrap: break-word; max-width: 800px;">{{ value.original }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td{% if colspan is not null %} colspan="{{ colspan + 1 }}"{% endif %} title="Formatted">
+                {{ value.formatted }}
+            </td>
+    {% elseif value is defined and value.formatted is defined and value.original is null %}
+        <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Formatted">
+            <div style="word-wrap: break-word; max-width: 800px;">{{ value.formatted }}</div>
+        </td>
+    {% elseif value is defined and value.formatted is defined and colspan is not null %}
+        <td colspan="{{ (colspan / 2)|round(0, 'floor') }}" title="Original">
+            <div style="word-wrap: break-word; max-width: 400px;">{{ value.original }}</div>
+        </td>
+        <td colspan="{{ (colspan / 2)|round(0, 'ceil') }}" title="Formatted">
+            <div style="word-wrap: break-word; max-width: 400px;">{{ value.formatted }}</div>
+        </td>
+    {% else %}
+        <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %}>
+            <div style="word-wrap: break-word; max-width: 800px;">{{ value }}</div>
+        </td>
+    {% endif %}
+{% endmacro %}
+
+{% macro colWrapDump(value, colspan = null) %}
+    {% if value is defined and value.formatted is defined and value.isWide %}
+            <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Original">
+                <div style="word-wrap: break-word; max-width: 800px;">{{ dump(value.original) }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td{% if colspan is not null %} colspan="{{ colspan + 1 }}"{% endif %} title="Formatted">
+                {{ dump(value.formatted) }}
+            </td>
+    {% elseif value is defined and value.formatted is defined and value.original is null %}
+        <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Formatted">
+            <div style="word-wrap: break-word; max-width: 800px;">{{ dump(value.formatted) }}</div>
+        </td>
+    {% elseif value is defined and value.formatted is defined and colspan is not null %}
+        <td colspan="{{ (colspan / 2)|round(0, 'floor') }}" title="Original">
+            <div style="word-wrap: break-word; max-width: 400px;">{{ dump(value.original) }}</div>
+        </td>
+        <td colspan="{{ (colspan / 2)|round(0, 'ceil') }}" title="Formatted">
+            <div style="word-wrap: break-word; max-width: 400px;">{{ dump(value.formatted) }}</div>
+        </td>
+    {% else %}
+        <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %}>
+            <div style="word-wrap: break-word; max-width: 800px;">{{ dump(value) }}</div>
+        </td>
+    {% endif %}
+{% endmacro %}

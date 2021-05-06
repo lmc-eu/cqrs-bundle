@@ -1,0 +1,11 @@
+parameters:
+    checkMissingIterableValueType: false
+    level: 7
+    paths:
+        - src
+        - tests
+
+    excludes_analyse:
+        - src/DependencyInjection/Configuration.php
+
+    ignoreErrors:

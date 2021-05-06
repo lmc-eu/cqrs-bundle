@@ -1,0 +1,56 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    #
+    # Query Fetcher
+    #
+
+    lmc_cqrs.query_fetcher:
+        class: Lmc\Cqrs\Handler\QueryFetcher
+        arguments:
+            $isCacheEnabled: '%lmc_cqrs.cache.enabled%'
+            $cache: '@?lmc_cqrs.cache_provider'
+            $profilerBag: '@?lmc_cqrs.profiler_bag'
+
+    Lmc\Cqrs\Handler\QueryFetcher: '@lmc_cqrs.query_fetcher'
+    Lmc\Cqrs\Types\QueryFetcherInterface: '@lmc_cqrs.query_fetcher'
+
+    #
+    # Command Sender
+    #
+
+    lmc_cqrs.command_sender:
+        class: Lmc\Cqrs\Handler\CommandSender
+        arguments:
+            $profilerBag: '@?lmc_cqrs.profiler_bag'
+
+    Lmc\Cqrs\Handler\CommandSender: '@lmc_cqrs.command_sender'
+    Lmc\Cqrs\Types\CommandSenderInterface: '@lmc_cqrs.command_sender'
+
+    #
+    # Default handlers
+    #
+
+    lmc_cqrs.query_handler.callback:
+        class: Lmc\Cqrs\Handler\Handler\CallbackQueryHandler
+
+    Lmc\Cqrs\Handler\Handler\CallbackQueryHandler: '@lmc_cqrs.query_handler.callback'
+
+    lmc_cqrs.send_command_handler.callback:
+        class: Lmc\Cqrs\Handler\Handler\CallbackSendCommandHandler
+
+    Lmc\Cqrs\Handler\Handler\CallbackSendCommandHandler: '@lmc_cqrs.send_command_handler.callback'
+
+    #
+    # Default response decoders
+    #
+
+    lmc_cqrs.response_decoder.json:
+        class: Lmc\Cqrs\Types\Decoder\JsonResponseDecoder
+        tags:
+            - { name: lmc_cqrs.response_decoder, priority: 20 }
+
+    Lmc\Cqrs\Types\Decoder\JsonResponseDecoder: '@lmc_cqrs.response_decoder.json'

@@ -1,0 +1,42 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    lmc_cqrs.query_handler.solr:
+        class: Lmc\Cqrs\Solr\Handler\SolrQueryHandler
+        arguments:
+            $client: '@?solarium.client'
+
+    Lmc\Cqrs\Solr\Handler\SolrQueryHandler: '@lmc_cqrs.query_handler.solr'
+
+    #
+    # Query Builder
+    #
+
+    lmc_cqrs.query_builder:
+        class: Lmc\Cqrs\Solr\QueryBuilder\QueryBuilder
+
+    Lmc\Cqrs\Solr\QueryBuilder\QueryBuilder: '@lmc_cqrs.query_builder'
+
+    #
+    # Applicators
+    #
+
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\ApplicatorFactory:
+        arguments:
+            $availableApplicators: !tagged_iterator { tag: lmc_cqrs.solr.query_builder_applicator, default_priority_method: getDefaultPriority }
+
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\EntityApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FacetsApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FilterApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FiltersApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FulltextApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FulltextBigramApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\FulltextBoostApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\GroupingApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\GroupingFacetApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\ParameterizedApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\SortApplicator: ~
+    Lmc\Cqrs\Solr\QueryBuilder\Applicator\StatsApplicator: ~
