@@ -2,6 +2,7 @@ LMC CQRS Bundle
 ===============
 
 [![cqrs-types](https://img.shields.io/badge/cqrs-types-purple.svg)](https://github.com/lmc-eu/cqrs-types)
+[![Latest Stable Version](https://img.shields.io/packagist/v/lmc/cqrs-bundle.svg)](https://packagist.org/packages/lmc/cqrs-bundle)
 [![Tests and linting](https://github.com/lmc-eu/cqrs-bundle/actions/workflows/tests.yaml/badge.svg)](https://github.com/lmc-eu/cqrs-bundle/actions/workflows/tests.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/lmc-eu/cqrs-bundle/badge.svg?branch=main)](https://coveralls.io/github/lmc-eu/cqrs-bundle?branch=main)
 
