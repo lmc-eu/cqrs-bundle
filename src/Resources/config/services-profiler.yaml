@@ -1,0 +1,30 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $cacheProvider: '%lmc_cqrs.cache.provider%'
+
+    Lmc\Cqrs\Bundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    Lmc\Cqrs\Bundle\Profiler\CqrsDataCollector:
+        arguments:
+            $formatters: !tagged_iterator { tag: lmc_cqrs.profiler_formatter, default_priority_method: getDefaultPriority }
+        tags:
+            - { name: data_collector, template: '@LmcCqrs/Profiler/index.html.twig', id: cqrs }
+
+    lmc_cqrs.profiler_bag:
+        class: Lmc\Cqrs\Handler\ProfilerBag
+
+    Lmc\Cqrs\Handler\ProfilerBag: '@lmc_cqrs.profiler_bag'
+
+    Lmc\Cqrs\Types\Formatter\JsonProfilerFormatter:
+        tags:
+            - { name: lmc_cqrs.profiler_formatter, priority: -1 }
+
+    Lmc\Cqrs\Bundle\Service\ErrorProfilerFormatter:
+        tags:
+            - { name: lmc_cqrs.profiler_formatter, priority: -1 }

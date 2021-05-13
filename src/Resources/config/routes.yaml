@@ -1,0 +1,3 @@
+Cache:
+    resource: '@LmcCqrsBundle/Controller/CacheController.php'
+    type: annotation

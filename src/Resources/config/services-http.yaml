@@ -1,0 +1,34 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    lmc_cqrs.query_handler.http:
+        class: Lmc\Cqrs\Http\Handler\HttpQueryHandler
+
+    Lmc\Cqrs\Http\Handler\HttpQueryHandler: '@lmc_cqrs.query_handler.http'
+
+    lmc_cqrs.send_command_handler.http:
+        class: Lmc\Cqrs\Http\Handler\HttpSendCommandHandler
+
+    Lmc\Cqrs\Http\Handler\HttpSendCommandHandler: '@lmc_cqrs.send_command_handler.http'
+
+    lmc_cqrs.response_decoder.http:
+        class: Lmc\Cqrs\Http\Decoder\HttpMessageResponseDecoder
+        tags:
+            - { name: lmc_cqrs.response_decoder, priority: 90 }
+
+    Lmc\Cqrs\Http\Decoder\HttpMessageResponseDecoder: '@lmc_cqrs.response_decoder.http'
+
+    lmc_cqrs.response_decoder.stream:
+        class: Lmc\Cqrs\Http\Decoder\StreamResponseDecoder
+        tags:
+            - { name: lmc_cqrs.response_decoder, priority: 70 }
+
+    Lmc\Cqrs\Http\Decoder\StreamResponseDecoder: '@lmc_cqrs.response_decoder.stream'
+
+    lmc_cqrs.profiler_formatter.http:
+        class: Lmc\Cqrs\Http\Formatter\HttpProfilerFormatter
+
+    Lmc\Cqrs\Http\Formatter\HttpProfilerFormatter: '@lmc_cqrs.profiler_formatter.http'

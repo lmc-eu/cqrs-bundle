@@ -1,0 +1,74 @@
+{
+    "name": "lmc/cqrs-bundle",
+    "type": "symfony-bundle",
+    "description": "A symfony bundle for CQRS library and its extensions for Queries and Commands",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "lmc/cqrs-handler": "^1.0",
+        "lmc/cqrs-types": "^1.0",
+        "symfony/config": "^4.4 || ^5.1",
+        "symfony/console": "^4.4 || ^5.1",
+        "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/error-handler": "^4.4 || ^5.1",
+        "symfony/framework-bundle": "^4.4 || ^5.1",
+        "symfony/http-foundation": "^4.4 || ^5.1",
+        "symfony/http-kernel": "^4.4 || ^5.1",
+        "twig/twig": "^2.0 || ^3.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.5",
+        "lmc/coding-standard": "^3.0",
+        "lmc/cqrs-http": "^1.0",
+        "lmc/cqrs-solr": "^1.0",
+        "php-parallel-lint/php-parallel-lint": "^1.2",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.83",
+        "phpstan/phpstan-phpunit": "^0.12.18",
+        "phpunit/phpunit": "^9.5",
+        "symfony/yaml": "^5.2"
+    },
+    "suggest": {
+        "lmc/cqrs-http": "Provides http handler and base types for queries and commands.",
+        "lmc/cqrs-solr": "Provides solr handler and base types for queries and commands."
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Lmc\\Cqrs\\Bundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lmc\\Cqrs\\Bundle\\": "tests/"
+        }
+    },
+    "scripts": {
+        "all": [
+            "@lint",
+            "@analyze",
+            "@tests"
+        ],
+        "analyze": [
+            "@cs",
+            "@phpstan"
+        ],
+        "cs": "vendor/bin/ecs check --ansi src/ tests/ ecs.php",
+        "fix": [
+            "vendor/bin/ecs check --ansi --clear-cache --fix src/ tests/ ecs.php",
+            "@composer normalize"
+        ],
+        "lint": [
+            "vendor/bin/parallel-lint -j 10 ./src ./tests",
+            "@composer validate",
+            "@composer normalize --dry-run"
+        ],
+        "phpstan": "vendor/bin/phpstan analyze -c phpstan.neon --ansi",
+        "tests": "vendor/bin/phpunit",
+        "tests-ci": "mkdir -p reports && php -dxdebug.coverage_enable=1 vendor/bin/phpunit -c phpunit.xml.dist"
+    }
+}

@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $cacheProvider: '%lmc_cqrs.cache.provider%'
+            $isExtensionHttpEnabled: '%lmc_cqrs.extension.http%'
+            $isExtensionSolrEnabled: '%lmc_cqrs.extension.solr%'
+
+    Lmc\Cqrs\Bundle\Command\:
+        resource: '../../Command'
