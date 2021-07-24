@@ -51,6 +51,6 @@ services:
     lmc_cqrs.response_decoder.json:
         class: Lmc\Cqrs\Types\Decoder\JsonResponseDecoder
         tags:
-            - { name: lmc_cqrs.response_decoder, priority: 20 }
+            - { name: lmc_cqrs.response_decoder, priority: 60 }
 
     Lmc\Cqrs\Types\Decoder\JsonResponseDecoder: '@lmc_cqrs.response_decoder.json'
