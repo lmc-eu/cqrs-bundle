@@ -93,7 +93,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
             'lmc_cqrs.response_decoder.json',
             JsonResponseDecoder::class,
             'lmc_cqrs.response_decoder',
-            20,
+            60,
             $containerBuilder
         );
 

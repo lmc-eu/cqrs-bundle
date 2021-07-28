@@ -241,7 +241,7 @@ See [Solr extension readme](https://github.com/lmc-eu/cqrs-solr#query-builder) f
 | ---     | ---   | --- | ---      | ---     |
 | Lmc\Cqrs\Http\Decoder\HttpMessageResponseDecoder | `@lmc_cqrs.response_decoder.http` | `lmc_cqrs.response_decoder` | 90 | if `http` extension is enabled |
 | Lmc\Cqrs\Http\Decoder\StreamResponseDecoder | `@lmc_cqrs.response_decoder.stream` | `lmc_cqrs.response_decoder` | 70 | if `http` extension is enabled |
-| Lmc\Cqrs\Types\Decoder\JsonResponseDecoder | `@lmc_cqrs.response_decoder.json` | `lmc_cqrs.response_decoder` | 20 | *always* |
+| Lmc\Cqrs\Types\Decoder\JsonResponseDecoder | `@lmc_cqrs.response_decoder.json` | `lmc_cqrs.response_decoder` | 60 | *always* |
 
 ### Profiler formatters
 | Service | Alias | Tag | Priority | Enabled |
