@@ -3,6 +3,7 @@
 <!-- There should always be "Unreleased" section at the beginning. -->
 
 ## Unreleased
+- Allow setting a profiler bag verbosity in bundle configuration
 
 ## 1.2.0 - 2021-08-10
 - Allow an `$initiator` in `ResponseDecoders` `supports` method

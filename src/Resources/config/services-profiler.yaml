@@ -18,6 +18,8 @@ services:
 
     lmc_cqrs.profiler_bag:
         class: Lmc\Cqrs\Handler\ProfilerBag
+        calls:
+          - setVerbosity: ['%lmc_cqrs.profiler.verbosity%']
 
     Lmc\Cqrs\Handler\ProfilerBag: '@lmc_cqrs.profiler_bag'
 
