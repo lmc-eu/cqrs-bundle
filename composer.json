@@ -1,8 +1,8 @@
 {
     "name": "lmc/cqrs-bundle",
-    "type": "symfony-bundle",
     "description": "A symfony bundle for CQRS library and its extensions for Queries and Commands",
     "license": "MIT",
+    "type": "symfony-bundle",
     "require": {
         "php": "^7.4",
         "ext-json": "*",
@@ -34,9 +34,6 @@
         "lmc/cqrs-http": "Provides http handler and base types for queries and commands.",
         "lmc/cqrs-solr": "Provides solr handler and base types for queries and commands."
     },
-    "config": {
-        "sort-packages": true
-    },
     "autoload": {
         "psr-4": {
             "Lmc\\Cqrs\\Bundle\\": "src/"
@@ -46,6 +43,14 @@
         "psr-4": {
             "Lmc\\Cqrs\\Bundle\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "ergebnis/composer-normalize": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
     },
     "scripts": {
         "all": [
