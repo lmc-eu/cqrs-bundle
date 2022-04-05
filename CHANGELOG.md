@@ -4,6 +4,7 @@
 
 ## Unreleased
 - Allow setting a profiler bag verbosity in bundle configuration
+- Format generic classes in profiler
 
 ## 1.2.0 - 2021-08-10
 - Allow an `$initiator` in `ResponseDecoders` `supports` method

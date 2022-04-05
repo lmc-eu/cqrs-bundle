@@ -30,3 +30,6 @@ services:
     Lmc\Cqrs\Bundle\Service\ErrorProfilerFormatter:
         tags:
             - { name: lmc_cqrs.profiler_formatter, priority: -1 }
+
+    Lmc\Cqrs\Bundle\Service\ClassExtension:
+        tags: ['twig.extension']
