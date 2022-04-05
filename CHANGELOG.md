@@ -3,6 +3,8 @@
 <!-- There should always be "Unreleased" section at the beginning. -->
 
 ## Unreleased
+
+## 1.3.0 - 2022-04-05
 - Allow setting a profiler bag verbosity in bundle configuration
 - Format generic classes in profiler
 
