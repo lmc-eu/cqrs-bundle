@@ -16,7 +16,9 @@ class ConfigurationTest extends AbstractTestCase
 
         $reference = <<<CONFIG
             lmc_cqrs:
-                profiler:%w false
+                profiler:
+                    enabled:%w false
+                    verbosity:%w ''
                 debug:%w false
                 cache:
                     enabled:%w null

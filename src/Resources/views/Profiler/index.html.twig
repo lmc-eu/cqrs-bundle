@@ -96,6 +96,10 @@
         .col--warning {
             background-color: {{ colors.warning|raw }};
         }
+
+        small.className {
+            color: gray;
+        }
     </style>
 
     <div class="metrics">
@@ -148,7 +152,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2">{{ commandItem.type }}</td>
+                    <td colspan="2">{{ commandItem.type|genericClass }}</td>
                     <td>{{ commandItem.duration }}ms</td>
                 </tr>
                 <tr>
@@ -165,7 +169,7 @@
                         <td colspan="3">
                             <ol>
                                 {% for decodedBy in commandItem.decodedBy %}
-                                    <li>{{ decodedBy }}</li>
+                                    <li>{{ decodedBy|genericClass }}</li>
                                 {% endfor %}
                             </ol>
                         </td>
@@ -220,7 +224,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2">{{ queryItem.type }}</td>
+                    <td colspan="2">{{ queryItem.type|genericClass }}</td>
                     <td>{{ queryItem.duration }}ms</td>
                     {% if queryItem.isLoadedFromCache %}
                         <td class="col--success" data-cached-status="{{ currentCacheKey }}">Yes</td>
@@ -260,7 +264,7 @@
                         <td colspan="5">
                             <ol>
                                 {% for decodedBy in queryItem.decodedBy %}
-                                    <li>{{ decodedBy }}</li>
+                                    <li>{{ decodedBy|genericClass }}</li>
                                 {% endfor %}
                             </ol>
                         </td>
@@ -400,7 +404,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="2">{{ otherItem.type }}</td>
+                        <td colspan="2">{{ otherItem.type|genericClass }}</td>
                         <td>{{ otherItem.duration }}ms</td>
                     </tr>
                     <tr>
@@ -417,7 +421,7 @@
                             <td colspan="2">
                                 <ol>
                                     {% for decodedBy in otherItem.decodedBy %}
-                                        <li>{{ decodedBy }}</li>
+                                        <li>{{ decodedBy|genericClass }}</li>
                                     {% endfor %}
                                 </ol>
                             </td>
@@ -660,27 +664,27 @@
 {% macro colWrap(value, colspan = null) %}
     {% if value is defined and value.formatted is defined and value.isWide %}
             <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Original">
-                <div style="word-wrap: break-word; max-width: 800px;">{{ value.original }}</div>
+                <div style="word-wrap: break-word; max-width: 800px;">{{ value.original|genericClass }}</div>
             </td>
         </tr>
         <tr>
             <td{% if colspan is not null %} colspan="{{ colspan + 1 }}"{% endif %} title="Formatted">
-                {{ value.formatted }}
+                {{ value.formatted|genericClass }}
             </td>
     {% elseif value is defined and value.formatted is defined and value.original is null %}
         <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %} title="Formatted">
-            <div style="word-wrap: break-word; max-width: 800px;">{{ value.formatted }}</div>
+            <div style="word-wrap: break-word; max-width: 800px;">{{ value.formatted|genericClass }}</div>
         </td>
     {% elseif value is defined and value.formatted is defined and colspan is not null %}
         <td colspan="{{ (colspan / 2)|round(0, 'floor') }}" title="Original">
-            <div style="word-wrap: break-word; max-width: 400px;">{{ value.original }}</div>
+            <div style="word-wrap: break-word; max-width: 400px;">{{ value.original|genericClass }}</div>
         </td>
         <td colspan="{{ (colspan / 2)|round(0, 'ceil') }}" title="Formatted">
-            <div style="word-wrap: break-word; max-width: 400px;">{{ value.formatted }}</div>
+            <div style="word-wrap: break-word; max-width: 400px;">{{ value.formatted|genericClass }}</div>
         </td>
     {% else %}
         <td{% if colspan is not null %} colspan="{{ colspan }}"{% endif %}>
-            <div style="word-wrap: break-word; max-width: 800px;">{{ value }}</div>
+            <div style="word-wrap: break-word; max-width: 800px;">{{ value|genericClass }}</div>
         </td>
     {% endif %}
 {% endmacro %}

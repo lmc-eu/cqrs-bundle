@@ -255,14 +255,11 @@ class LmcCqrsExtensionTest extends AbstractTestCase
 
     /**
      * @test
+     * @dataProvider provideProfilerConfigs
      */
-    public function shouldSetUpServicesForProfiler(): void
+    public function shouldSetUpServicesForProfiler(array $config): void
     {
-        $configs = [
-            [
-                'profiler' => true,
-            ],
-        ];
+        $configs = [$config];
 
         $this->extension->load($configs, $this->containerBuilder);
 
@@ -272,6 +269,20 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertNoDebugSettings($this->containerBuilder);
         $this->assertNoHttpExtensionSettings($this->containerBuilder);
         $this->assertNoSolrExtensionSettings($this->containerBuilder);
+
+        $this->assertSame(
+            ProfilerBag::VERBOSITY_NORMAL,
+            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity')
+        );
+    }
+
+    public function provideProfilerConfigs(): array
+    {
+        return [
+            // config
+            'short' => [['profiler' => true]],
+            'full' => [['profiler' => ['enabled' => true]]],
+        ];
     }
 
     private function assertProfilerSettings(ContainerBuilder $containerBuilder): void
@@ -304,6 +315,39 @@ class LmcCqrsExtensionTest extends AbstractTestCase
             -1,
             $containerBuilder
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetUpServicesForProfilerWithVerbosity(): void
+    {
+        $configs = [
+            [
+                'profiler' => [
+                    'enabled' => true,
+                    'verbosity' => ProfilerBag::VERBOSITY_DEBUG,
+                ],
+            ],
+        ];
+
+        $this->extension->load($configs, $this->containerBuilder);
+
+        $this->assertDefaultSettings($this->containerBuilder);
+        $this->assertNoCacheSettings($this->containerBuilder);
+        $this->assertProfilerSettings($this->containerBuilder);
+        $this->assertNoDebugSettings($this->containerBuilder);
+        $this->assertNoHttpExtensionSettings($this->containerBuilder);
+        $this->assertNoSolrExtensionSettings($this->containerBuilder);
+
+        $this->assertSame(
+            ProfilerBag::VERBOSITY_DEBUG,
+            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity')
+        );
+
+        $profilerBag = $this->containerBuilder->get('lmc_cqrs.profiler_bag');
+        $this->assertInstanceOf(ProfilerBag::class, $profilerBag);
+        $this->assertSame(ProfilerBag::VERBOSITY_DEBUG, $profilerBag->getVerbosity());
     }
 
     /**

@@ -26,6 +26,7 @@ class LmcCqrsExtension extends Extension
 
     public const PARAMETER_CACHE_ENABLED = 'lmc_cqrs.cache.enabled';
     public const PARAMETER_CACHE_PROVIDER = 'lmc_cqrs.cache.provider';
+    public const PARAMETER_PROFILER_VERBOSITY = 'lmc_cqrs.profiler.verbosity';
     public const PARAMETER_EXTENSION_HTTP = 'lmc_cqrs.extension.http';
     public const PARAMETER_EXTENSION_SOLR = 'lmc_cqrs.extension.solr';
 
@@ -82,7 +83,9 @@ class LmcCqrsExtension extends Extension
 
     private function tryRegisterProfiler(array $config, ContainerBuilder $container, YamlFileLoader $loader): void
     {
-        if ($config['profiler']) {
+        if ($config['profiler']['enabled']) {
+            $container->setParameter(self::PARAMETER_PROFILER_VERBOSITY, $config['profiler']['verbosity']);
+
             $loader->load('services-profiler.yaml');
         }
     }

@@ -3,6 +3,7 @@
 namespace Lmc\Cqrs\Bundle\Command;
 
 use Lmc\Cqrs\Bundle\Profiler\CqrsDataCollector;
+use Lmc\Cqrs\Handler\ProfilerBag;
 use Lmc\Cqrs\Types\CommandSenderInterface;
 use Lmc\Cqrs\Types\QueryFetcherInterface;
 use Lmc\Cqrs\Types\ValueObject\PrioritizedItem;
@@ -22,6 +23,7 @@ class DebugCqrsCommand extends Command
     private ?CqrsDataCollector $cqrsDataCollector;
     private bool $isExtensionHttpEnabled;
     private bool $isExtensionSolrEnabled;
+    private ?ProfilerBag $profilerBag;
 
     /**
      * @phpstan-param QueryFetcherInterface<mixed, mixed> $queryFetcher
@@ -33,7 +35,8 @@ class DebugCqrsCommand extends Command
         ?string $cacheProvider,
         ?CqrsDataCollector $cqrsDataCollector,
         bool $isExtensionHttpEnabled,
-        bool $isExtensionSolrEnabled
+        bool $isExtensionSolrEnabled,
+        ?ProfilerBag $profilerBag
     ) {
         $this->queryFetcher = $queryFetcher;
         $this->commandSender = $commandSender;
@@ -41,6 +44,7 @@ class DebugCqrsCommand extends Command
         $this->cqrsDataCollector = $cqrsDataCollector;
         $this->isExtensionHttpEnabled = $isExtensionHttpEnabled;
         $this->isExtensionSolrEnabled = $isExtensionSolrEnabled;
+        $this->profilerBag = $profilerBag;
         parent::__construct();
     }
 
@@ -98,8 +102,14 @@ class DebugCqrsCommand extends Command
 
         $this->io->title('Profiler');
         if ($this->cqrsDataCollector !== null) {
+            $verbosity = 'normal';
+            if ($this->profilerBag && !empty($currentVerbosity = $this->profilerBag->getVerbosity())) {
+                $verbosity = $currentVerbosity;
+            }
+
             $this->io->definitionList(
                 ['Is Enabled' => 'Yes'],
+                ['Verbosity' => $verbosity],
                 ['Data Collector' => get_class($this->cqrsDataCollector)],
             );
 

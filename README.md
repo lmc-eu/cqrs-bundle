@@ -29,7 +29,7 @@ composer require lmc/cqrs-bundle
 
 ```yaml
 lmc_cqrs:
-    profiler: false         # Whether to enable profiler and allow to profile queries and commands [default false]
+    profiler: false         # Whether to enable profiler and allow profiling queries and commands [default false]
     debug: false            # Whether to enable debug the CQRS by a console command [default false]
 
     cache:
@@ -39,6 +39,14 @@ lmc_cqrs:
     extension:
         http: false         # Whether should http extension be active (requires a lmc/cqrs-http dependency) [default false]
         solr: false         # Whether should solr extension be active (requires a lmc/cqrs-solr dependency) [default false]
+```
+
+### Profiler extended configuration
+```yaml
+lmc_cqrs:
+    profiler:
+        enabled: false      # Whether to enable profiler and allow profiling queries and commands [default false]
+        verbosity: ''       # Verbosity level (verbose or debug) for a profiler bag - empty string is a default for normal
 ```
 
 **TIPs**:

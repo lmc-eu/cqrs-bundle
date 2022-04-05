@@ -2,6 +2,7 @@
 
 namespace Lmc\Cqrs\Bundle\DependencyInjection;
 
+use Lmc\Cqrs\Handler\ProfilerBag;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -12,8 +13,20 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('lmc_cqrs');
         $treeBuilder->getRootNode()
             ->children()
-                ->booleanNode('profiler')
-                    ->defaultFalse()
+                ->arrayNode('profiler')
+                    ->beforeNormalization()
+                        ->ifTrue(fn ($v) => is_bool($v))
+                        ->then(fn (bool $v) => ['enabled' => $v])
+                    ->end()
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultFalse()
+                        ->end()
+                        ->scalarNode('verbosity')
+                            ->defaultValue(ProfilerBag::VERBOSITY_NORMAL)
+                        ->end()
+                    ->end()
                 ->end()
                 ->booleanNode('debug')
                     ->defaultFalse()
