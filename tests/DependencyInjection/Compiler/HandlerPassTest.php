@@ -80,7 +80,7 @@ class HandlerPassTest extends AbstractTestCase
                 array_filter(
                     $methodCalls,
                     fn (array $called) => $called[0] === $method
-                )
+                ),
             );
 
             foreach ($currentMethodCalls as $i => [1 => $calledWith]) {

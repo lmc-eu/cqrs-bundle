@@ -42,7 +42,7 @@ class ErrorProfilerFormatterTest extends AbstractTestCase
                     'test',
                     '',
                     null,
-                    $error = new \Exception('error message')
+                    $error = new \Exception('error message'),
                 ),
                 new ProfilerItem(
                     'id',
@@ -53,8 +53,8 @@ class ErrorProfilerFormatterTest extends AbstractTestCase
                     new FormattedValue(
                         'error message',
                         FlattenException::createFromThrowable($error),
-                        true
-                    )
+                        true,
+                    ),
                 ),
             ],
         ];

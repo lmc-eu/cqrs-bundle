@@ -14,14 +14,8 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 class CqrsDataCollector extends DataCollector
 {
-    private ProfilerBag $profilerBag;
-    /** @phpstan-var QueryFetcherInterface<mixed, mixed> */
-    private QueryFetcherInterface $queryFetcher;
-    /** @phpstan-var CommandSenderInterface<mixed, mixed> */
-    private CommandSenderInterface $commandSender;
     /** @var ProfilerFormatterInterface[] */
     private array $formatters;
-    private ?string $cacheProvider;
 
     public static function getDefaultPriority(): int
     {
@@ -34,17 +28,13 @@ class CqrsDataCollector extends DataCollector
      * @param \Traversable<ProfilerFormatterInterface> $formatters
      */
     public function __construct(
-        ProfilerBag $profilerBag,
-        QueryFetcherInterface $queryFetcher,
-        CommandSenderInterface $commandSender,
+        private ProfilerBag $profilerBag,
+        private QueryFetcherInterface $queryFetcher,
+        private CommandSenderInterface $commandSender,
         \Traversable $formatters,
-        ?string $cacheProvider
+        private ?string $cacheProvider,
     ) {
-        $this->profilerBag = $profilerBag;
-        $this->queryFetcher = $queryFetcher;
-        $this->commandSender = $commandSender;
         $this->formatters = iterator_to_array($formatters);
-        $this->cacheProvider = $cacheProvider;
     }
 
     /**
@@ -76,9 +66,9 @@ class CqrsDataCollector extends DataCollector
             fn (ProfilerItem $item) => array_reduce(
                 $this->formatters,
                 fn (ProfilerItem $item, ProfilerFormatterInterface $formatter) => $formatter->formatItem($item),
-                $item
+                $item,
             ),
-            $profilerBag
+            $profilerBag,
         );
     }
 
@@ -89,7 +79,7 @@ class CqrsDataCollector extends DataCollector
                 $itemKey => get_class($item->getItem()),
                 'priority' => $item->getPriority(),
             ],
-            $prioritizedItems
+            $prioritizedItems,
         );
     }
 
@@ -107,7 +97,7 @@ class CqrsDataCollector extends DataCollector
     {
         return array_map(
             fn (ProfilerFormatterInterface $formatter) => get_class($formatter),
-            $this->data['formatters'] ?? []
+            $this->data['formatters'] ?? [],
         );
     }
 
@@ -161,7 +151,7 @@ class CqrsDataCollector extends DataCollector
 
                 return $count;
             },
-            0
+            0,
         );
     }
 
