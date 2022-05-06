@@ -14,37 +14,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DebugCqrsCommand extends Command
 {
-    /** @phpstan-var QueryFetcherInterface<mixed, mixed> */
-    private QueryFetcherInterface $queryFetcher;
-    /** @phpstan-var CommandSenderInterface<mixed, mixed> */
-    private CommandSenderInterface $commandSender;
     private SymfonyStyle $io;
-    private ?string $cacheProvider;
-    private ?CqrsDataCollector $cqrsDataCollector;
-    private bool $isExtensionHttpEnabled;
-    private bool $isExtensionSolrEnabled;
-    private ?ProfilerBag $profilerBag;
 
     /**
      * @phpstan-param QueryFetcherInterface<mixed, mixed> $queryFetcher
      * @phpstan-param CommandSenderInterface<mixed, mixed> $commandSender
      */
     public function __construct(
-        QueryFetcherInterface $queryFetcher,
-        CommandSenderInterface $commandSender,
-        ?string $cacheProvider,
-        ?CqrsDataCollector $cqrsDataCollector,
-        bool $isExtensionHttpEnabled,
-        bool $isExtensionSolrEnabled,
-        ?ProfilerBag $profilerBag
+        private QueryFetcherInterface $queryFetcher,
+        private CommandSenderInterface $commandSender,
+        private ?string $cacheProvider,
+        private ?CqrsDataCollector $cqrsDataCollector,
+        private bool $isExtensionHttpEnabled,
+        private bool $isExtensionSolrEnabled,
+        private ?ProfilerBag $profilerBag,
     ) {
-        $this->queryFetcher = $queryFetcher;
-        $this->commandSender = $commandSender;
-        $this->cacheProvider = $cacheProvider;
-        $this->cqrsDataCollector = $cqrsDataCollector;
-        $this->isExtensionHttpEnabled = $isExtensionHttpEnabled;
-        $this->isExtensionSolrEnabled = $isExtensionSolrEnabled;
-        $this->profilerBag = $profilerBag;
         parent::__construct();
     }
 
@@ -69,7 +53,7 @@ class DebugCqrsCommand extends Command
             [
                 ['http', $this->isExtensionHttpEnabled ? 'Yes' : 'No'],
                 ['solr', $this->isExtensionSolrEnabled ? 'Yes' : 'No'],
-            ]
+            ],
         );
 
         $this->separator();

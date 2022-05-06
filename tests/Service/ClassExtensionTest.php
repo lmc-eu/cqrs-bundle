@@ -22,8 +22,10 @@ class ClassExtensionTest extends TestCase
         $filter = $this->extension->getFilters()[0];
         $this->assertSame('genericClass', $filter->getName());
 
-        $result = call_user_func($filter->getCallable(), $string);
+        $callback = $filter->getCallable();
+        $this->assertIsCallable($callback);
 
+        $result = call_user_func($callback, $string);
         $this->assertSame($expected, $result);
     }
 

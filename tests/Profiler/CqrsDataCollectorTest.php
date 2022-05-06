@@ -46,7 +46,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
         iterable $queries,
         iterable $commands,
         iterable $others,
-        iterable $formatters
+        iterable $formatters,
     ): CqrsDataCollector {
         $this->queryFetcher->addHandler(new CallbackQueryHandler(), 50);
         $this->queryFetcher->addDecoder(new JsonResponseDecoder(), 50);
@@ -73,7 +73,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
             (function () use ($formatters): \Generator {
                 yield from $formatters;
             })(),
-            '@cache.provider'
+            '@cache.provider',
         );
     }
 
@@ -133,7 +133,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
                     ],
                 ],
             ],
-            $collector->getCommandSender()
+            $collector->getCommandSender(),
         );
 
         $this->assertSame(
@@ -154,7 +154,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
                     ],
                 ],
             ],
-            $collector->getQueryFetcher()
+            $collector->getQueryFetcher(),
         );
 
         $this->assertSame([], $collector->getRegisteredFormatters());
@@ -199,7 +199,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
                 new CacheKey('q3-key'),
                 false,
                 true,
-                100
+                100,
             ),
             new ProfilerItem(
                 'q3-from-cache',
@@ -210,7 +210,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
                 null,
                 new CacheKey('q3-key'),
                 true,
-                false
+                false,
             ),
         ];
 
@@ -249,7 +249,7 @@ class CqrsDataCollectorTest extends AbstractTestCase
                 ProfilerItem::TYPE_QUERY,
                 'test',
                 '{"data": {"response": "value"}}',
-                $error
+                $error,
             ),
         ];
 
@@ -259,20 +259,20 @@ class CqrsDataCollectorTest extends AbstractTestCase
                 [
                     'body' => new FormattedValue(
                         '{"body": "value"}',
-                        ['body' => 'value']
+                        ['body' => 'value'],
                     ),
                 ],
                 ProfilerItem::TYPE_QUERY,
                 'test',
                 new FormattedValue(
                     '{"data": {"response": "value"}}',
-                    ['data' => ['response' => 'value']]
+                    ['data' => ['response' => 'value']],
                 ),
                 new FormattedValue(
                     'error message',
                     FlattenException::createFromThrowable($error),
-                    true
-                )
+                    true,
+                ),
             ),
         ];
 
@@ -289,14 +289,14 @@ class CqrsDataCollectorTest extends AbstractTestCase
                 JsonProfilerFormatter::class,
                 ErrorProfilerFormatter::class,
             ],
-            $collector->getFormatters()
+            $collector->getFormatters(),
         );
         $this->assertEquals(
             [
                 new JsonProfilerFormatter(),
                 new ErrorProfilerFormatter(),
             ],
-            $collector->getRegisteredFormatters()
+            $collector->getRegisteredFormatters(),
         );
     }
 }

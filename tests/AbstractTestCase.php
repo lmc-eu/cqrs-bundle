@@ -19,7 +19,7 @@ abstract class AbstractTestCase extends TestCase
         string $class,
         string $tag,
         int $priority,
-        ContainerBuilder $containerBuilder
+        ContainerBuilder $containerBuilder,
     ): void {
         $definition = $containerBuilder->findDefinition($class);
 
@@ -33,24 +33,22 @@ abstract class AbstractTestCase extends TestCase
         string $class,
         string $tag,
         int $priority,
-        ContainerBuilder $containerBuilder
+        ContainerBuilder $containerBuilder,
     ): void {
         $this->assertHasServiceWithAlias($alias, $class, $containerBuilder);
         $this->assertHasDefinitionWithPriority($class, $tag, $priority, $containerBuilder);
     }
 
-    /** @param mixed $reference */
-    protected function assertReference(string $expectedReferenceId, $reference): void
+    protected function assertReference(string $expectedReferenceId, mixed $reference): void
     {
         $this->assertInstanceOf(Reference::class, $reference);
         $this->assertSame($expectedReferenceId, (string) $reference);
     }
 
-    /** @param mixed $argument */
     protected function assertTaggedIterator(
         string $expectedTag,
         string $expectedDefaultPriorityMethod,
-        $argument
+        mixed $argument,
     ): void {
         $this->assertInstanceOf(TaggedIteratorArgument::class, $argument);
 
@@ -62,7 +60,7 @@ abstract class AbstractTestCase extends TestCase
 
     protected function assertAutoconfiguredTags(
         array $expectedAutoconfiguredTags,
-        ContainerBuilder $containerBuilder
+        ContainerBuilder $containerBuilder,
     ): void {
         $definitions = $containerBuilder->getAutoconfiguredInstanceof();
 

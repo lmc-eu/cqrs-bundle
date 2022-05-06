@@ -7,13 +7,13 @@ use Twig\TwigFilter;
 
 class ClassExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
                 'genericClass',
                 fn (string $class) => $this->formatGenericClass($class),
-                ['is_safe' => ['html']]
+                ['is_safe' => ['html']],
             ),
         ];
     }
@@ -29,7 +29,7 @@ class ClassExtension extends AbstractExtension
                 return sprintf(
                     '<small class="className">%s</small><strong>%s</strong>',
                     $this->replaceOnceFromEnd($shortName, '', $class),
-                    $shortName
+                    $shortName,
                 );
             } elseif ($this->tryParseClassWithGenerics($class, $shortName, $genericArguments)) {
                 if ($this->tryParseClassWithGenerics($genericArguments)) {
@@ -37,7 +37,7 @@ class ClassExtension extends AbstractExtension
                 } else {
                     $generics = array_map(
                         fn (string $genericArgument) => $this->formatGenericClass(trim($genericArgument)),
-                        explode(',', $genericArguments)
+                        explode(',', $genericArguments),
                     );
 
                     $generics = implode(', ', $generics);
@@ -83,7 +83,7 @@ class ClassExtension extends AbstractExtension
     private function tryParseClassWithGenerics(
         string $class,
         ?string &$shortClassName = null,
-        ?string &$genericArguments = null
+        ?string &$genericArguments = null,
     ): bool {
         if (preg_match('/^([A-Z][A-Za-z0-9]*\\\\)*([A-Z][A-Za-z]*?)<(.*)>$/', $class, $matches) === 1) {
             $genericArguments = array_pop($matches);

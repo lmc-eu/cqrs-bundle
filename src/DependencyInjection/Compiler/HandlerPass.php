@@ -30,7 +30,7 @@ class HandlerPass implements CompilerPassInterface
         foreach ($this->iterateByTags(
             $container,
             LmcCqrsExtension::TAG_QUERY_HANDLER,
-            $defaultPriority
+            $defaultPriority,
         ) as $handlerId => $priority) {
             $queryFetcher->addMethodCall('addHandler', [new Reference($handlerId), $priority]);
         }
@@ -38,7 +38,7 @@ class HandlerPass implements CompilerPassInterface
         foreach ($this->iterateByTags(
             $container,
             LmcCqrsExtension::TAG_RESPONSE_DECODER,
-            $defaultPriority
+            $defaultPriority,
         ) as $decoderId => $priority) {
             $queryFetcher->addMethodCall('addDecoder', [new Reference($decoderId), $priority]);
         }
@@ -56,7 +56,7 @@ class HandlerPass implements CompilerPassInterface
         foreach ($this->iterateByTags(
             $container,
             LmcCqrsExtension::TAG_SEND_COMMAND_HANDLER,
-            $defaultPriority
+            $defaultPriority,
         ) as $handlerId => $priority) {
             $commandSender->addMethodCall('addHandler', [new Reference($handlerId), $priority]);
         }
@@ -64,7 +64,7 @@ class HandlerPass implements CompilerPassInterface
         foreach ($this->iterateByTags(
             $container,
             LmcCqrsExtension::TAG_RESPONSE_DECODER,
-            $defaultPriority
+            $defaultPriority,
         ) as $decoderId => $priority) {
             $commandSender->addMethodCall('addDecoder', [new Reference($decoderId), $priority]);
         }

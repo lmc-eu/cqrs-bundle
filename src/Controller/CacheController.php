@@ -12,12 +12,12 @@ class CacheController
     /**
      * Returns a list of deleted keys or status of deleted key if only one key was provided
      *
-     * @Route("/_profiler/cqrs-bundle/query/cache/invalidate", name="_cqrs_query_cache_invalidate")
      * @phpstan-param QueryFetcherInterface<mixed, mixed> $queryFetcher
      */
+    #[Route('/_profiler/cqrs-bundle/query/cache/invalidate', name: '_cqrs_query_cache_invalidate')]
     public function invalidateQueryCacheAction(
         QueryFetcherInterface $queryFetcher,
-        Request $request
+        Request $request,
     ): JsonResponse {
         /** @var string|array|null $keys */
         $keys = $request->query->get('key');

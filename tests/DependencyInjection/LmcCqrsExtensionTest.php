@@ -81,12 +81,12 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertHasServiceWithAlias(
             'lmc_cqrs.query_handler.callback',
             CallbackQueryHandler::class,
-            $containerBuilder
+            $containerBuilder,
         );
         $this->assertHasServiceWithAlias(
             'lmc_cqrs.send_command_handler.callback',
             CallbackSendCommandHandler::class,
-            $containerBuilder
+            $containerBuilder,
         );
 
         $this->assertHasServiceWithAliasTagAndPriority(
@@ -94,7 +94,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
             JsonResponseDecoder::class,
             'lmc_cqrs.response_decoder',
             60,
-            $containerBuilder
+            $containerBuilder,
         );
 
         $expectedAutoconfiguredTags = [
@@ -207,7 +207,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
     private function assertCacheSettings(
         ContainerBuilder $containerBuilder,
         string $providerAlias,
-        string $expectedProvider
+        string $expectedProvider,
     ): void {
         $containerBuilder
             ->register($providerAlias)
@@ -272,7 +272,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
 
         $this->assertSame(
             ProfilerBag::VERBOSITY_NORMAL,
-            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity')
+            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity'),
         );
     }
 
@@ -294,7 +294,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertTaggedIterator(
             'lmc_cqrs.profiler_formatter',
             'getDefaultPriority',
-            $cqrsDataCollectorDefinition->getArgument('$formatters')
+            $cqrsDataCollectorDefinition->getArgument('$formatters'),
         );
         $this->assertTrue($cqrsDataCollectorDefinition->hasTag('data_collector'));
         $dataCollectorTag = $cqrsDataCollectorDefinition->getTag('data_collector')[0];
@@ -307,13 +307,13 @@ class LmcCqrsExtensionTest extends AbstractTestCase
             JsonProfilerFormatter::class,
             'lmc_cqrs.profiler_formatter',
             -1,
-            $containerBuilder
+            $containerBuilder,
         );
         $this->assertHasDefinitionWithPriority(
             ErrorProfilerFormatter::class,
             'lmc_cqrs.profiler_formatter',
             -1,
-            $containerBuilder
+            $containerBuilder,
         );
     }
 
@@ -342,7 +342,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
 
         $this->assertSame(
             ProfilerBag::VERBOSITY_DEBUG,
-            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity')
+            $this->containerBuilder->getParameter('lmc_cqrs.profiler.verbosity'),
         );
 
         $profilerBag = $this->containerBuilder->get('lmc_cqrs.profiler_bag');
@@ -418,26 +418,26 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertHasServiceWithAlias(
             'lmc_cqrs.send_command_handler.http',
             HttpSendCommandHandler::class,
-            $containerBuilder
+            $containerBuilder,
         );
         $this->assertHasServiceWithAliasTagAndPriority(
             'lmc_cqrs.response_decoder.http',
             HttpMessageResponseDecoder::class,
             'lmc_cqrs.response_decoder',
             90,
-            $containerBuilder
+            $containerBuilder,
         );
         $this->assertHasServiceWithAliasTagAndPriority(
             'lmc_cqrs.response_decoder.stream',
             StreamResponseDecoder::class,
             'lmc_cqrs.response_decoder',
             70,
-            $containerBuilder
+            $containerBuilder,
         );
         $this->assertHasServiceWithAlias(
             'lmc_cqrs.profiler_formatter.http',
             HttpProfilerFormatter::class,
-            $containerBuilder
+            $containerBuilder,
         );
     }
 
@@ -471,7 +471,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertHasServiceWithAlias('lmc_cqrs.query_handler.solr', SolrQueryHandler::class, $containerBuilder);
         $this->assertReference(
             'solarium.client',
-            $containerBuilder->findDefinition(SolrQueryHandler::class)->getArgument('$client')
+            $containerBuilder->findDefinition(SolrQueryHandler::class)->getArgument('$client'),
         );
 
         $this->assertHasServiceWithAlias('lmc_cqrs.query_builder', QueryBuilder::class, $containerBuilder);
@@ -480,7 +480,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
         $this->assertTaggedIterator(
             'lmc_cqrs.solr.query_builder_applicator',
             'getDefaultPriority',
-            $containerBuilder->findDefinition(ApplicatorFactory::class)->getArgument('$availableApplicators')
+            $containerBuilder->findDefinition(ApplicatorFactory::class)->getArgument('$availableApplicators'),
         );
 
         $expectedApplicators = [
@@ -504,7 +504,7 @@ class LmcCqrsExtensionTest extends AbstractTestCase
 
         $this->assertAutoconfiguredTags(
             ['lmc_cqrs.solr.query_builder_applicator' => ApplicatorInterface::class],
-            $containerBuilder
+            $containerBuilder,
         );
     }
 

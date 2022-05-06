@@ -3,6 +3,10 @@
 <!-- There should always be "Unreleased" section at the beginning. -->
 
 ## Unreleased
+- Require php 8.1
+    - [**BC**] Use new language features and change method signatures
+- Allow Symfony 6
+- [**BC**] Drop Symfony 4.4 and 5.1 support
 
 ## 1.3.0 - 2022-04-05
 - Allow setting a profiler bag verbosity in bundle configuration
